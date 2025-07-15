@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -6,28 +7,31 @@ import Tooltip from '@mui/material/Tooltip';
 import Drawer from '@mui/material/Drawer';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
-import { styled, Theme } from '@mui/material/styles';
+import { styled, Theme, ThemeProvider } from '@mui/material/styles';
 import { GlobalStyles } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import ListIcon from '@mui/icons-material/List';
 import EditIcon from '@mui/icons-material/Edit';
 import SettingsIcon from '@mui/icons-material/Settings';
+import theme from './theme';
 import './index.css';
 
 // スタイル付きコンポーネントの作成
+// スタイル付きコンポーネントの作成
 const BlurredBox = styled(Box)(({ theme }: { theme: Theme }) => ({
-  backdropFilter: 'blur(4px)',
-  backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  backdropFilter: 'blur(6px)',
+  backgroundColor: 'rgba(255, 255, 255, 0.85)',
   borderRadius: theme.shape.borderRadius,
-  padding: theme.spacing(2),
+  padding: theme.spacing(3),
   position: 'relative',
+  boxShadow: '0 4px 12px rgba(0, 82, 136, 0.15)',
 }));
 
 const StyledDrawer = styled(Drawer)(() => ({
   '& .MuiDrawer-paper': {
-    backdropFilter: 'blur(4px)',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    backdropFilter: 'blur(6px)',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
   },
 }));
 
@@ -63,17 +67,17 @@ export default function AdvancedLauncherMenu() {
   const actions: Action[] = [
     {
       icon: <ListIcon />,
-      name: 'Bottom Drawer',
+      name: 'Flight Logs',
       action: () => setBottomDrawerOpen(true),
     },
     {
       icon: <EditIcon />,
-      name: 'Right Drawer',
+      name: 'Flight Settings',
       action: () => setRightDrawerOpen(true),
     },
     {
       icon: <SettingsIcon />,
-      name: 'Modal',
+      name: 'System Info',
       action: () => setModalOpen(true),
     },
   ];
@@ -84,7 +88,7 @@ export default function AdvancedLauncherMenu() {
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       {ModalOverlayStyles}
       <Box
         sx={{
@@ -112,9 +116,11 @@ export default function AdvancedLauncherMenu() {
                   color="secondary"
                   onClick={() => handleAction(action.action)}
                   sx={{
-                    backgroundColor: 'rgba(156, 39, 176, 0.6)',
-                    color: 'white',
-                    '&:hover': { backgroundColor: 'rgba(156, 39, 176, 0.8)' },
+                    backgroundColor: theme.palette.secondary.main,
+                    color: theme.palette.secondary.contrastText,
+                    '&:hover': {
+                      backgroundColor: theme.palette.secondary.dark || '#c17900',
+                    },
                   }}
                 >
                   {action.icon}
@@ -139,17 +145,25 @@ export default function AdvancedLauncherMenu() {
         open={bottomDrawerOpen}
         onClose={() => setBottomDrawerOpen(false)}
       >
-        <BlurredBox sx={{ height: 200 }}>
+        <BlurredBox sx={{ height: 250 }}>
           <IconButton
             onClick={() => setBottomDrawerOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6">Bottom Drawer Content</Typography>
-          <Typography>
-            This is a bottom drawer for lists or other content.
+          <Typography variant="h6" gutterBottom>
+            Flight Logs
           </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Recent flight logs and status updates for Dorone aircraft.
+          </Typography>
+          {/* Placeholder for flight logs list */}
+          <Box sx={{ mt: 2, maxHeight: 140, overflowY: 'auto' }}>
+            <Typography variant="body2">- Flight #1234: Completed</Typography>
+            <Typography variant="body2">- Flight #5678: Scheduled</Typography>
+            <Typography variant="body2">- Flight #9101: In Progress</Typography>
+          </Box>
         </BlurredBox>
       </StyledDrawer>
 
@@ -159,17 +173,25 @@ export default function AdvancedLauncherMenu() {
         open={rightDrawerOpen}
         onClose={() => setRightDrawerOpen(false)}
       >
-        <BlurredBox sx={{ width: 250, height: '100%' }}>
+        <BlurredBox sx={{ width: 300, height: '100%' }}>
           <IconButton
             onClick={() => setRightDrawerOpen(false)}
             sx={{ position: 'absolute', right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6">Right Drawer Content</Typography>
-          <Typography>
-            This is a right-side drawer for editing or settings.
+          <Typography variant="h6" gutterBottom>
+            Flight Settings
           </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Configure flight parameters and system preferences.
+          </Typography>
+          {/* Placeholder for settings controls */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">- Max Altitude: 12000 ft</Typography>
+            <Typography variant="body2">- Speed Limit: 250 knots</Typography>
+            <Typography variant="body2">- Auto-Pilot: Enabled</Typography>
+          </Box>
         </BlurredBox>
       </StyledDrawer>
 
@@ -201,15 +223,20 @@ export default function AdvancedLauncherMenu() {
           >
             <CloseIcon />
           </IconButton>
-          <Typography id="modal-title" variant="h6" component="h2">
-            Modal Title
+          <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
+            System Information
           </Typography>
-          <Typography id="modal-description" sx={{ mt: 2 }}>
-            This is a modal for important actions or notifications. It's now
-            larger to accommodate more content.
+          <Typography id="modal-description" variant="body2" color="text.secondary">
+            Overview of system status, version, and notifications.
           </Typography>
+          {/* Placeholder for system info */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">- Version: 1.2.3</Typography>
+            <Typography variant="body2">- Uptime: 72 hours</Typography>
+            <Typography variant="body2">- Alerts: None</Typography>
+          </Box>
         </BlurredBox>
       </StyledModal>
-    </>
+    </ThemeProvider>
   );
 }
