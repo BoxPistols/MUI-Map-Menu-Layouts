@@ -61,8 +61,10 @@ export default function AdvancedLauncherMenu() {
   const [bottomDrawerOpen, setBottomDrawerOpen] = useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
 
   const handleToggle = () => setOpen(!open);
+  const handleLeftDrawerToggle = () => setLeftDrawerOpen(!leftDrawerOpen);
 
   const actions: Action[] = [
     {
@@ -82,6 +84,13 @@ export default function AdvancedLauncherMenu() {
     },
   ];
 
+  const navItems = [
+    { name: 'Dashboard', icon: <ListIcon /> },
+    { name: 'Flights', icon: <EditIcon /> },
+    { name: 'Maintenance', icon: <SettingsIcon /> },
+    { name: 'Reports', icon: <ListIcon /> },
+  ];
+
   const handleAction = (actionFunc: () => void) => {
     actionFunc();
     setOpen(false);
@@ -90,6 +99,70 @@ export default function AdvancedLauncherMenu() {
   return (
     <ThemeProvider theme={theme}>
       {ModalOverlayStyles}
+
+      {/* Left Drawer for Navigation */}
+      <StyledDrawer
+        anchor="left"
+        open={leftDrawerOpen}
+        onClose={() => setLeftDrawerOpen(false)}
+      >
+        <BlurredBox sx={{ width: 280, height: '100%' }}>
+          <IconButton
+            onClick={() => setLeftDrawerOpen(false)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" gutterBottom>
+            Navigation
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {navItems.map((item) => (
+              <Tooltip key={item.name} title={item.name} placement="right">
+                <IconButton
+                  color="primary"
+                  sx={{
+                    justifyContent: 'flex-start',
+                    width: '100%',
+                    color: theme.palette.primary.main,
+                  }}
+                >
+                  {item.icon}
+                  <Typography sx={{ ml: 1 }}>{item.name}</Typography>
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        </BlurredBox>
+      </StyledDrawer>
+
+      {/* Button to toggle Left Drawer */}
+      <Box
+        sx={{
+          position: 'fixed',
+          top: 16,
+          left: 16,
+          zIndex: 9999,
+        }}
+      >
+        <Tooltip title="Toggle Navigation" placement="right">
+          <IconButton
+            color="primary"
+            onClick={handleLeftDrawerToggle}
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.dark || '#003d66',
+              },
+            }}
+          >
+            <ListIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      {/* Existing Bottom Right Floating Action Button and Menu */}
       <Box
         sx={{
           position: 'fixed',
